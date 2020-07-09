@@ -1,16 +1,16 @@
-import firebase from "firebase/app";
+import firebase from 'firebase/app';
 
-import "firebase/firestore";
-import "firebase/auth";
+import 'firebase/firestore';
+import 'firebase/auth';
 
 const config = {
-  apiKey: "AIzaSyDjVb-GoLG4LuxAFsjG33KmfnzV5tXY-xk",
-  authDomain: "crwn-db-de7e3.firebaseapp.com",
-  databaseURL: "https://crwn-db-de7e3.firebaseio.com",
-  projectId: "crwn-db-de7e3",
-  storageBucket: "crwn-db-de7e3.appspot.com",
-  messagingSenderId: "985043964722",
-  appId: "1:985043964722:web:49a3ed3e8de2fa0e68fd2b",
+  apiKey: 'AIzaSyDjVb-GoLG4LuxAFsjG33KmfnzV5tXY-xk',
+  authDomain: 'crwn-db-de7e3.firebaseapp.com',
+  databaseURL: 'https://crwn-db-de7e3.firebaseio.com',
+  projectId: 'crwn-db-de7e3',
+  storageBucket: 'crwn-db-de7e3.appspot.com',
+  messagingSenderId: '985043964722',
+  appId: '1:985043964722:web:49a3ed3e8de2fa0e68fd2b',
 };
 
 export const createUserProfileDocument = async (userAuth, additionalData) => {
@@ -27,7 +27,7 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
     try {
       await userRef.set({ displayName, email, createdAt, ...additionalData });
     } catch (error) {
-      console.log("Error creating users", error.message);
+      console.log('Error creating users', error.message);
     }
   }
 
@@ -36,11 +36,44 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
 
 firebase.initializeApp(config);
 
+export const addCollectionAndDocuments = async (
+  collectionKey,
+  objectsToAdd
+) => {
+  const collectionRef = firestore.collection(collectionKey);
+
+  const batch = firestore.batch();
+
+  objectsToAdd.forEach((object) => {
+    const newDocRef = collectionRef.doc();
+    batch.set(newDocRef, object);
+  });
+
+  await batch.commit();
+};
+
+export const convertCollectionsSnapshotToMap = (collections) => {
+  const transformedCollections = collections.docs.map((doc) => {
+    const { title, items } = doc.data();
+    return {
+      routeName: encodeURI(title.toLowerCase()),
+      id: doc.id,
+      title,
+      items,
+    };
+  });
+
+  return transformedCollections.reduce((accumulator, collection) => {
+    accumulator[collection.title.toLowerCase()] = collection;
+    return accumulator;
+  }, {});
+};
+
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 
 const provider = new firebase.auth.GoogleAuthProvider();
-provider.setCustomParameters({ prompt: "select_account" });
+provider.setCustomParameters({ prompt: 'select_account' });
 
 export const signInWithGoogle = () => auth.signInWithPopup(provider);
 
