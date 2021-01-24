@@ -4,7 +4,6 @@ import {
   SIGN_OUT_SUCCESS,
   SIGN_OUT_FAILURE,
   SIGN_UP_FAILURE,
-  SIGN_UP_SUCCESS,
 } from './user.types';
 
 const initialState = {
