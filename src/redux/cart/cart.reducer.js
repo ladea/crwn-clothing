@@ -3,7 +3,9 @@ import {
   ADD_ITEM,
   REMOVE_ITEM,
   DELETE_ITEM,
+  CLEAR_CART,
 } from './cart.types';
+
 import { addItemToCart, removeItemFromCart } from './cart.utils';
 
 const initialState = {
@@ -23,6 +25,11 @@ const cartReducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         items: state.items.filter((item) => item.id !== payload.id),
+      };
+    case CLEAR_CART:
+      return {
+        ...state,
+        items: [],
       };
     default:
       return state;

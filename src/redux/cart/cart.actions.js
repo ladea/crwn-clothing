@@ -3,6 +3,7 @@ import {
   ADD_ITEM,
   DELETE_ITEM,
   REMOVE_ITEM,
+  CLEAR_CART,
 } from './cart.types';
 
 const toggleCartVisability = () => ({
@@ -21,6 +22,10 @@ export const deleteItem = (item) => ({
 export const removeItem = (item) => ({
   type: REMOVE_ITEM,
   payload: item,
+});
+
+export const clearCart = () => ({
+  type: CLEAR_CART,
 });
 
 export default toggleCartVisability;
